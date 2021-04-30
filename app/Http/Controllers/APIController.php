@@ -3,33 +3,67 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
-use Yajra\Datatables\Datatables;
+use App\Device;
+// use Yajra\Datatables\Datatables;
+use App\Transformers\DeviceTransformer;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Log;
 
 class APIController extends Controller
 {
     public function getRowDetailsData()
     {
-        $customers = Customer::select(['id', 'first_name', 'last_name', 'email', 'created_at', 'updated_at']);
+        // $customers = Customer::select(['id', 'first_name', 'last_name', 'email', 'created_at', 'updated_at']);
+        $devices = Device::with('speed_events');
 
-        return Datatables::of($customers)->make(true);
+        $result = DataTables::eloquent($devices)
+        ->setTransformer(new DeviceTransformer)
+        ->filterColumn('chasisnum', function($query, $keyword){
+            $sql = "json_extract(attributes, '$.chasis_number') like ? ";
+            $query->whereRaw($sql, ["%{$keyword}%"]);
+        })
+        ->filterColumn('simnum', function($query, $keyword){
+            $sql = "json_extract(attributes, '$.device_sim_no') like ? ";
+            $query->whereRaw($sql, ["%{$keyword}%"]);
+        })
+        ->addColumn('speedcount', function(Device $device) {
+            return count($device->speed_events);
+        })
+        ->addColumn('details_url', function($device) {
+                return route('api.device_single_details', $device->id);
+        })
+        ->rawColumns(['speedcount'])
+        ->make(true);
+
+Log::error($result);
+        return $result;
+
     }
 
-    public function getMasterDetailsData()
-    {
-        $customers = Customer::select();
+    // public function getMasterDetailsData()
+    // {
+    //     $customers = Customer::select();
 
-        return Datatables::of($customers)
-            ->addColumn('details_url', function($customer) {
-                return route('api.master_single_details', $customer->id);
-            })->make(true);
-    }
+    //     return Datatables::of($customers)
+    //         ->addColumn('details_url', function($customer) {
+    //             return route('api.master_single_details', $customer->id);
+    //         })->make(true);
+    // }
 
+   
+    // public function getMasterDetailsSingleData($id)
+    // {
+    //     $purchases = Customer::findOrFail($id)->purchases;
+
+    //     return Datatables::of($purchases)->make(true);
+    // }
     public function getMasterDetailsSingleData($id)
     {
-        $purchases = Customer::findOrFail($id)->purchases;
+        $positions = Device::findOrFail($id)->positions;
 
-        return Datatables::of($purchases)->make(true);
+        return Datatables::of($positions)->make(true);
     }
+
 
     public function getColumnSearchData()
     {

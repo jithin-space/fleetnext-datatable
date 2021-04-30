@@ -11,9 +11,12 @@
 |
 */
 
-Route::get('/', 'HomeController@index')->name('simple');
+// Route::get('/', 'HomeController@index')->name('simple');
 
-Route::get('/row-details', 'HomeController@getRowDetails')->name('row_details');
+Route::get('/', 'DeviceController@getRowDetails')->name('simple');
+
+
+Route::get('/row-details', 'DeviceController@getRowDetails')->name('row_details');
 
 Route::get('/master-details', 'HomeController@getMasterDetails')->name('master_details');
 

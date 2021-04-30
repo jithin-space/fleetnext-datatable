@@ -47,7 +47,7 @@
             var column = this;
 
             //example for removing search field
-            if (column.footer().className !== 'non_searchable') {
+            if (!column.footer().classList.contains('non_searchable')) {
               var input = document.createElement("input");
               $(input).appendTo($(column.footer()).empty())
               .keyup(function () {
