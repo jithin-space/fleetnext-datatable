@@ -13,10 +13,10 @@
 
 // Route::get('/', 'HomeController@index')->name('simple');
 
-Route::get('/', 'DeviceController@getRowDetails')->name('simple');
+Route::get('/', 'DeviceController@getRowDetails')->name('simple')->middleware('auth');
 
 
-Route::get('/row-details', 'DeviceController@getRowDetails')->name('row_details');
+Route::get('/row-details', 'DeviceController@getRowDetails')->name('row_details')->middleware('auth');
 
 Route::get('/master-details', 'HomeController@getMasterDetails')->name('master_details');
 
@@ -26,3 +26,12 @@ Route::get('/row-attributes', 'HomeController@getRowAttributes')->name('row_attr
 
 Route::get('/carbon', 'HomeController@getCarbon')->name('carbon');
 
+
+Auth::routes();
+
+Route::get('/home', 'DeviceController@getRowDetails')->name('home');
+
+Route::get('/logout', function(){
+    Auth::logout();
+    return Redirect::to('login');
+ });

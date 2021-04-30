@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap.min.css" rel="stylesheet">
     @yield('styles')
 </head>
 <body>
@@ -33,7 +33,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        Fleetrac
+                        <img src="logo.png" width="auto" height="35" style="margin-top:-12px" alt="">
                     </a>
                 </div>
 
@@ -44,14 +44,32 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="{{ route('simple') }}">All Devices</a></li>
+                    <!-- <ul class="nav navbar-nav navbar-right">
+                         <li><a href="{{ route('simple') }}">All Devices</a></li> -->
                         <!-- <li><a href="{{ route('row_details') }}">Row details</a></li>
                         <li><a href="{{ route('master_details') }}">Master details</a></li>
                         <li><a href="{{ route('column_search') }}">Column search</a></li>
                         <li><a href="{{ route('row_attributes') }}">Row attributes</a></li>
-                        <li><a href="{{ route('carbon') }}">Carbon formatting</a></li> -->
-                    </ul>
+                        <li><a href="{{ route('carbon') }}">Carbon formatting</a></li> 
+                    </ul> -->
+
+                      <ul class="nav navbar-nav navbar-right">
+                    <!-- Authentication Links -->
+                    @if (Auth::guest())
+                        <li><a href="{{ url('/login') }}">Login</a></li>
+                        <!-- <li><a href="{{ url('/register') }}">Register</a></li> -->
+                    @else
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                {{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
+                            </ul>
+                        </li>
+                    @endif
+                </ul>
                 </div>
             </div>
         </nav>
@@ -59,9 +77,9 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="panel panel-default">
+                    
                         @yield('content')
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -69,9 +87,15 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.print.min.js"></script>
     @yield('javascript')
 </body>
 </html>

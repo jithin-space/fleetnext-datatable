@@ -1,26 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="panel-heading">Row details</div>
+    <h3>Speed Report</h3>
     <div class="panel-body">
         <table class="table table-bordered" id="customers-table">
             <thead>
                 <tr>
-                    <th></th>
-                    <th>Id</th>
+                    <th ></th>
+                    <th >Id</th>
                     <th>Name</th>
                     <th>Unique ID</th>
                     <th>Chasis No</th>
                     <th>SIM No</th>
-                    <th>Overspeeds</th>
+                    <th >Overspeeds</th>
                     <th>Reported AT</th>
-                    <th>Speed(kmph)</th>
+                    <th >Speed(kmph)</th>
                 </tr>
             </thead>
              <tfoot>
                 <tr>
                     <td class="non_searchable"></td>
-                    <td class="non_searchable"></td>
+                    <td class="non_searchable"></>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -32,13 +32,24 @@
             </tfoot>
         </table>
     </div>
+
+    <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+    </div>
+    </div>
 @endsection
 
 @section('javascript')
 
     <script id="details-template" type="text/x-handlebars-template">
         @verbatim
-        <div class="label label-info">Device {{ name }}'s Positions</div>
+
+        <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Device {{ name }}'s Positions</h4>
+        </div>
+        <div class="modal-body">
         <table class="table details-table" id="purchases-{{id}}">
             <thead>
             <tr>
@@ -50,12 +61,19 @@
             </tr>
             </thead>
         </table>
+        </div>
+        </div>
         @endverbatim
     </script>
 
     <script>
           var template = Handlebars.compile($("#details-template").html());
           var table = $('#customers-table').DataTable({
+            "lengthMenu": [[10, 100, 500, -1], [10, 100, 500, "All"]],
+            dom: 'lrBtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
             processing: true,
             serverSide: true,
             ajax: '{{ route('api.row_details') }}',
@@ -65,9 +83,15 @@
                 "orderable":      false,
                 "searchable":     false,
                 "data":           null,
-                "defaultContent": ''
+                "defaultContent": '<img src="./images/details_open.png">'
               },
-              { data: 'id', name: 'id' },
+              {   
+                  searchable: false,
+                  orderable: false,
+                  data: null,
+                  defaultContent: '',
+                  targets: 1,
+              },
               { data: 'name', name: 'name' },
               { data: 'uniqueid', name: 'uniqueid' },
               { data: 'chasisnum', name: 'chasisnum', orderable: false },
@@ -76,45 +100,67 @@
               { data: 'lastupdate', name: 'lastupdate', orderable: false },
               { data: 'recordedspeed', name: 'recordedspeed', orderable: false },
             ],
-            order: [[1, 'asc']],
+            order: [[2, 'asc']],
             initComplete: function () {
-                this.api().columns().every(function () {
-                    var column = this;
 
-                    // example for removing search field
-                    if (!column.footer().classList.contains('non_searchable')) {
-                    var input = document.createElement("input");
-                    $(input).appendTo($(column.footer()).empty())
-                    .keyup(function () {
-                        column.search($(this).val(), false, false, true).draw();
-                    });
-                    }
-                });
+                $('#customers-table tfoot tr').clone(true).appendTo( '#customers-table thead' );
+
+                $('#customers-table thead tr:eq(1) td').each( function (i) {
+                    if(!this.classList.contains('non_searchable')) {
+                    var title = $(this).text();
+                    $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+                    $(this).removeClass('sorting');
+                    $( 'input', this ).on( 'keyup change', function () {
+                        if ( table.column(i).search() !== this.value ) {
+                            table
+                                .column(i)
+                                .search( this.value )
+                                .draw();
+                        }
+                    } );
+                }
+                } );
             }
           });
+
+          table.on( 'draw.dt', function () {
+            var PageInfo = $('#customers-table').DataTable().page.info();
+                table.column(1, { page: 'current' }).nodes().each( function (cell, i) {
+                    cell.innerHTML = i + 1 + PageInfo.start;
+                } );
+            } );
 
           $('#customers-table tbody').on('click', 'td.details-control', function () {
             var tr = $(this).closest('tr');
+            var that = this;
             var row = table.row( tr );
             var tableId = 'purchases-' + row.data().id;
 
-            if ( row.child.isShown() ) {
+            if ($('#myModal').hasClass('in')) {
               // This row is already open - close it
-              row.child.hide();
-              tr.removeClass('shown');
+              $(this)[0].firstChild.src='./images/details_open.png';
             }
             else {
-              // Open this row
-              row.child(template(row.data())).show();
-                initTable(tableId, row.data());
-                console.log(row.data());
-                tr.addClass('shown');
-                tr.next().find('td').addClass('no-padding bg-gray');
+              $('.modal-dialog').html(template(row.data()));
+              initTable(tableId, row.data());
+              $('#myModal').modal();
+                $(that)[0].firstChild.src='./images/details_close.png';
             }
+
+              $('#myModal').on('hidden.bs.modal',function(){
+                $(that)[0].firstChild.src='./images/details_open.png';
+              });
           });
+
+        
 
           function initTable(tableId, data) {
             $('#' + tableId).DataTable({
+            "lengthMenu": [[10, 100, 500, -1], [10, 100, 500, "All"]],
+            dom: 'lrfBtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
             processing: true,
             serverSide: true,
             ajax: data.details_url,
@@ -127,5 +173,7 @@
             ]
             })
         }
+
+        $('#customers-table_filter').hide();
     </script>
 @endsection

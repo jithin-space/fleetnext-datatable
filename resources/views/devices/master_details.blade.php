@@ -48,7 +48,7 @@
             "orderable":      false,
             "searchable":     false,
             "data":           null,
-            "defaultContent": ''
+            "defaultContent": 'abc',
           },
           { data: 'id', name: 'id' },
           { data: 'first_name', name: 'first_name' },
