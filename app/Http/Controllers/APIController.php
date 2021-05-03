@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Customer;
 use App\Device;
+use DB;
+
 // use Yajra\Datatables\Datatables;
 use App\Transformers\DeviceTransformer;
 use Yajra\DataTables\Facades\DataTables;
@@ -16,7 +18,17 @@ class APIController extends Controller
         // $customers = Customer::select(['id', 'first_name', 'last_name', 'email', 'created_at', 'updated_at']);
         $devices = Device::with('speed_events');
 
-        $result = DataTables::eloquent($devices)
+
+        // $sql = 'select id, name, uniqueid, servertime, d.attributes as device_attributes, sub.attributes as event_attributes
+        //     from tc_devices d left join (select max(servertime) as servertime, deviceid, attributes from tc_events 
+        //     where type = "deviceOverspeed" group by deviceid)sub on d.id = sub.deviceid';
+
+        // DB::statement("SET SQL_MODE=''");
+
+        // $devices  = DB::connection('mysql2')->select(DB::raw($sql));
+
+        // return Datatables::of($feedbacks)->toJson();
+        $result = DataTables::of($devices)
         ->setTransformer(new DeviceTransformer)
         ->filterColumn('chasisnum', function($query, $keyword){
             $sql = "json_extract(attributes, '$.chasis_number') like ? ";

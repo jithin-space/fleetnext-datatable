@@ -50,7 +50,7 @@ return [
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
-            'strict' => true,
+            'strict' => false,
             'engine' => null,
 	    'modes' => [
      'ONLY_FULL_GROUP_BY',
@@ -60,6 +60,7 @@ return [
      'ERROR_FOR_DIVISION_BY_ZERO',
      'NO_ENGINE_SUBSTITUTION',
 ],
+
         ],
 
         'mysql2' => [
@@ -73,7 +74,7 @@ return [
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
-            'strict' => true,
+            'strict' => false,
             'engine' => null,
 	    'modes' => [
      'ONLY_FULL_GROUP_BY',

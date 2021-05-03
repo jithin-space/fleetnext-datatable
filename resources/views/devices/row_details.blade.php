@@ -75,6 +75,9 @@
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ],
             processing: true,
+            'language': {
+            'processing': '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'
+            },
             serverSide: false,
             ajax: '{{ route('api.row_details') }}',
             columns: [
@@ -85,7 +88,7 @@
                 "data":           null,
                 "defaultContent": '<img src="./images/details_open.png">'
               },
-              {   
+              {
                   searchable: false,
                   orderable: false,
                   data: null,
@@ -157,7 +160,7 @@
               });
           });
 
-        
+
 
           function initTable(tableId, data) {
             $('#' + tableId).DataTable({
@@ -174,23 +177,23 @@
                 { data: 'id', name: 'id' },
                 { data: 'servertime', name: 'servertime' },
 	        { data: null,
-	          name: 'latitude', 
+	          name: 'latitude',
                   render: function(data, type, row, meta){
                      if(type === 'display'){
                         //data = '<a  target="_blank" href="https://maps.google.com/maps?q=' + row.latitude + ',' + row.longitude +  '"> ' + row.latitude + ' </a>';
                         data = '<a  target="popup" onclick="window.open(\'https://maps.google.com/maps?q=' + row.latitude + ',' + row.longitude +  '\',\'popup\',\'width=600,height=600,resizable=no\'); return false;"> ' + row.latitude + ' </a>';
                      }
                      return data;
-                  }  
+                  }
 	        },
 	        { data: null,
-	          name: 'longitude', 
+	          name: 'longitude',
                   render: function(data, type, row, meta){
                      if(type === 'display'){
                         data = '<a  target="popup" onclick="window.open(\'https://maps.google.com/maps?q=' + row.latitude + ',' + row.longitude +  '\',\'popup\',\'width=600,height=600,resizable=no\'); return false;"> ' + row.longitude + ' </a>';
                      }
                      return data;
-                  }  
+                  }
 	        },
                 { data: 'speed', name: 'speed', render: (data) => (data*1.852).toFixed(2) },
             ]
