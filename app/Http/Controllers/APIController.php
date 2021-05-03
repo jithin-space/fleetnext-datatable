@@ -30,14 +30,14 @@ class APIController extends Controller
         // return Datatables::of($feedbacks)->toJson();
         $result = DataTables::of($devices)
         ->setTransformer(new DeviceTransformer)
-        ->filterColumn('chasisnum', function($query, $keyword){
-            $sql = "json_extract(attributes, '$.chasis_number') like ? ";
-            $query->whereRaw($sql, ["%{$keyword}%"]);
-        })
-        ->filterColumn('simnum', function($query, $keyword){
-            $sql = "json_extract(attributes, '$.device_sim_no') like ? ";
-            $query->whereRaw($sql, ["%{$keyword}%"]);
-        })
+        // ->filterColumn('chasisnum', function($query, $keyword){
+        //     $sql = "json_extract(attributes, '$.chasis_number') like ? ";
+        //     $query->whereRaw($sql, ["%{$keyword}%"]);
+        // })
+        // ->filterColumn('simnum', function($query, $keyword){
+        //     $sql = "json_extract(attributes, '$.device_sim_no') like ? ";
+        //     $query->whereRaw($sql, ["%{$keyword}%"]);
+        // })
         ->addColumn('speedcount', function(Device $device) {
             return count($device->speed_events);
         })
@@ -47,7 +47,6 @@ class APIController extends Controller
         ->rawColumns(['speedcount'])
         ->make(true);
 
-Log::error($result);
         return $result;
 
     }

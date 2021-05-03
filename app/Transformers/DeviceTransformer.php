@@ -32,7 +32,7 @@ class DeviceTransformer extends TransformerAbstract
             'chasisnum' => array_key_exists('chasis_number', $attributes) ?
                             $attributes['chasis_number'] : 'N/A',
             'simnum' => array_key_exists('device_sim_no', $attributes)?
-                            $attributes['device_sim_no']: 'N/A',
+                            strval($attributes['device_sim_no']): 'N/A',
             'lastupdate' => ($speed_count > 0) ? $lastUpdateObj['servertime']: 'N/A',
             'recordedspeed' => ($speed_count > 0 ) ? 
                                 round(json_decode($lastUpdateObj['attributes'],true)['speed']*1.852,4)

@@ -12,7 +12,7 @@
                     <th>Unique ID</th>
                     <th>Chasis No</th>
                     <th>SIM No</th>
-                    <th >Overspeeds</th>
+                    <th>Overspeeds</th>
                     <th>Reported AT</th>
                     <th >Speed(kmph)</th>
                 </tr>
