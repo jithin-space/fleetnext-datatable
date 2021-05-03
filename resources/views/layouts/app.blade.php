@@ -11,6 +11,7 @@
     <title>Fleetrac</title>
 
     <!-- Styles -->
+    <link rel="stylesheet" href="{{ asset('css/overrides.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">

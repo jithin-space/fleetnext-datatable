@@ -1,0 +1,4 @@
+table.dataTable tr.even { background-color: #f1f1f1; }
+table.dataTable tr.odd { background-color: white; }
+table.dataTable tr.overspeed { background-color: #ffd5d5; }
+#purchases-216_filter { display: none; }
