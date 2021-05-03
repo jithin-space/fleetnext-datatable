@@ -36,7 +36,7 @@ class DeviceTransformer extends TransformerAbstract
             'lastupdate' => ($device->speedcount > 0) ? $device->servertime : 'N/A',
             'recordedspeed' => ($device->speedcount > 0) ?
             round($knot_speed * 1.852, 4)
-            : 'N/A',
+            : 0,
             'speedcount' => $device->speedcount,
             'details_url' => route('api.device_single_details', $device->id),
         ];
