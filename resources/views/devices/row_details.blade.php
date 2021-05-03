@@ -75,7 +75,7 @@
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ],
             processing: true,
-            serverSide: true,
+            serverSide: false,
             ajax: '{{ route('api.row_details') }}',
             columns: [
               {
@@ -96,9 +96,9 @@
               { data: 'uniqueid', name: 'uniqueid' },
               { data: 'chasisnum', name: 'chasisnum', orderable: false },
               { data: 'simnum', name: 'simnum', orderable: false },
-              { data: 'speedcount',  name: 'speedcount', orderable: false },
+              { data: 'speedcount',  name: 'speedcount', orderable: true },
               { data: 'lastupdate', name: 'lastupdate', orderable: false },
-              { data: 'recordedspeed', name: 'recordedspeed', orderable: false },
+              { data: 'recordedspeed', name: 'recordedspeed', orderable: true },
             ],
             order: [[2, 'asc']],
 	    "createdRow": function( row, data, dataIndex ) {
