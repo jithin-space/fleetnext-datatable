@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<h3 class="primary">Speed Report</h3>
+<h3 class="primary">Speed Report(Last 72hrs)</h3>
 <div class="panel-body">
     <table class="table table-bordered" id="customers-table">
         <thead>

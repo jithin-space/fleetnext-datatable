@@ -19,7 +19,7 @@ class APIController extends Controller
 
         $sql = 'select id, name, uniqueid, servertime, d.attributes as device_attributes, sub.attributes as event_attributes, sub.speedcount
             from tc_devices d left join (select count(*) as speedcount,max(servertime) as servertime, deviceid, attributes from tc_events
-            where type = "deviceOverspeed" group by deviceid)sub on d.id = sub.deviceid';
+            where type = "deviceOverspeed" and servertime >= now() - interval 3 day group by deviceid)sub on d.id = sub.deviceid';
 
         // DB::statement("set session sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';");
 
@@ -57,7 +57,8 @@ class APIController extends Controller
     // }
     public function getMasterDetailsSingleData($id)
     {
-        $positions = Device::findOrFail($id)->positions;
+        $positions = Device::findOrFail($id)->positions()
+            ->whereRaw('servertime > now() - interval 3 day')->get();
 
         return Datatables::of($positions)->make(true);
     }
