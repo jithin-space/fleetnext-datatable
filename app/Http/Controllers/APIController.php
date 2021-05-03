@@ -4,49 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Customer;
 use App\Device;
-use DB;
+use App\Transformers\DeviceTransformer;
 
 // use Yajra\Datatables\Datatables;
-use App\Transformers\DeviceTransformer;
+use DB;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Log;
 
 class APIController extends Controller
 {
     public function getRowDetailsData()
     {
         // $customers = Customer::select(['id', 'first_name', 'last_name', 'email', 'created_at', 'updated_at']);
-        $devices = Device::with('speed_events');
+        // $devices = Device::with('speed_events');
 
+        $sql = 'select id, name, uniqueid, servertime, d.attributes as device_attributes, sub.attributes as event_attributes, sub.speedcount
+            from tc_devices d left join (select count(*) as speedcount,max(servertime) as servertime, deviceid, attributes from tc_events
+            where type = "deviceOverspeed" group by deviceid)sub on d.id = sub.deviceid';
 
-        // $sql = 'select id, name, uniqueid, servertime, d.attributes as device_attributes, sub.attributes as event_attributes
-        //     from tc_devices d left join (select max(servertime) as servertime, deviceid, attributes from tc_events 
-        //     where type = "deviceOverspeed" group by deviceid)sub on d.id = sub.deviceid';
+        // DB::statement("set session sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';");
 
-        // DB::statement("SET SQL_MODE=''");
+        // Log::error(DB::connection('mysql2')->select(DB::raw($sql))->toSql());
 
-        // $devices  = DB::connection('mysql2')->select(DB::raw($sql));
+        $devices = DB::connection('mysql2')->select(DB::raw($sql));
 
         // return Datatables::of($feedbacks)->toJson();
         $result = DataTables::of($devices)
-        ->setTransformer(new DeviceTransformer)
-        // ->filterColumn('chasisnum', function($query, $keyword){
-        //     $sql = "json_extract(attributes, '$.chasis_number') like ? ";
-        //     $query->whereRaw($sql, ["%{$keyword}%"]);
-        // })
-        // ->filterColumn('simnum', function($query, $keyword){
-        //     $sql = "json_extract(attributes, '$.device_sim_no') like ? ";
-        //     $query->whereRaw($sql, ["%{$keyword}%"]);
-        // })
-        ->addColumn('speedcount', function(Device $device) {
-            return count($device->speed_events);
-        })
-        ->addColumn('details_url', function($device) {
+            ->setTransformer(new DeviceTransformer)
+            ->addColumn('details_url', function ($device) {
                 return route('api.device_single_details', $device->id);
-        })
-        ->rawColumns(['speedcount'])
-        ->make(true);
-
+            })
+            ->rawColumns(['speedcount'])
+            ->make(true);
         return $result;
 
     }
@@ -61,7 +49,6 @@ class APIController extends Controller
     //         })->make(true);
     // }
 
-   
     // public function getMasterDetailsSingleData($id)
     // {
     //     $purchases = Customer::findOrFail($id)->purchases;
@@ -74,7 +61,6 @@ class APIController extends Controller
 
         return Datatables::of($positions)->make(true);
     }
-
 
     public function getColumnSearchData()
     {
@@ -89,7 +75,7 @@ class APIController extends Controller
 
         return Datatables::of($customers)
             ->addColumn('action', function ($customer) {
-                return '<a href="#edit-'. $customer->id.'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
+                return '<a href="#edit-' . $customer->id . '" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
             })
             ->editColumn('id', '{{$id}}')
             ->removeColumn('updated_at')

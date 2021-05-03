@@ -50,7 +50,7 @@ return [
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
-            'strict' => false,
+            'strict' => true,
             'engine' => null,
 	    'modes' => [
      'ONLY_FULL_GROUP_BY',
@@ -74,10 +74,10 @@ return [
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
-            'strict' => false,
+            'strict' => true,
             'engine' => null,
 	    'modes' => [
-     'ONLY_FULL_GROUP_BY',
+    //  'ONLY_FULL_GROUP_BY',
      'STRICT_TRANS_TABLES',
      'NO_ZERO_IN_DATE',
      'NO_ZERO_DATE',
