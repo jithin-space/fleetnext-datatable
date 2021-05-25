@@ -48,7 +48,7 @@
         <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Device {{ name }}'s Positions</h4>
+            <h4 class="modal-title">Device {{ uniqueid }}'s Positions</h4>
         </div>
         <div class="modal-body">
         <table class="table details-table" id="purchases-{{id}}">
@@ -119,24 +119,27 @@ var table = $('#customers-table').DataTable({
         {
             data: 'speedcount',
             name: 'speedcount',
-            orderable: true
+	    orderable: true,
+	    visible: false,
+	    searchable:false
         },
         {
             data: 'lastupdate',
             name: 'lastupdate',
-            orderable: true
+	    orderable: true,
         },
         {
             data: 'recordedspeed',
             name: 'recordedspeed',
-            orderable: true
+	    orderable: true,
+	    render: function (data){  return (data >= 140 ? 140: Math.round(data));}
         },
     ],
     order: [
-        [2, 'asc']
+        [6, 'desc']
     ],
     "createdRow": function(row, data, dataIndex) {
-        if (data['speedcount'] != 0) {
+        if (data['recordedspeed'] > 80) {
             $(row).addClass('overspeed');
         }
     },
@@ -202,7 +205,15 @@ function initTable(tableId, data) {
         ],
         dom: 'lrfBtip',
         buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
+		'copy',
+{ extend: 'excel',
+title: function() {
+			return $('.modal-title')[0].innerHTML;
+		}}, 
+{ extend: 'pdfHtml5',
+title: function() {
+			return $('.modal-title')[0].innerHTML;
+		}}, 
         ],
         processing: true,
         searching: false,
@@ -210,7 +221,8 @@ function initTable(tableId, data) {
         ajax: data.details_url,
         columns: [{
                 data: 'id',
-                name: 'id'
+		name: 'id',
+		visible: true
             },
             {
                 data: 'servertime',
