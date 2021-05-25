@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Customer;
 use App\Device;
+use Illuminate\Http\Request;
 use App\Transformers\DeviceTransformer;
 
 // use Yajra\Datatables\Datatables;
@@ -12,30 +13,61 @@ use Yajra\DataTables\Facades\DataTables;
 
 class APIController extends Controller
 {
-    public function getRowDetailsData()
+    public function getDeviceIds($email){
+
+        if($email) {
+            $ids = DB::connection('mysql2')->select(DB::raw('select id from tc_users where email="'.$email.'"'));
+            if($ids[0]->id){
+                $d_ids = DB::connection('mysql2')->select(DB::raw('select deviceid from tc_user_device where userid='.$ids[0]->id));
+                return $d_ids;
+            }
+
+            return [];
+        }
+    }
+    public function getRowDetailsData(Request $request)
     {
         // $customers = Customer::select(['id', 'first_name', 'last_name', 'email', 'created_at', 'updated_at']);
         // $devices = Device::with('speed_events');
 
-        $sql = 'select id, name, uniqueid, servertime, d.attributes as device_attributes, sub.attributes as event_attributes, sub.speedcount
-            from tc_devices d left join (select count(*) as speedcount,max(servertime) as servertime, deviceid, attributes from tc_events
-            where type = "deviceOverspeed" and servertime >= now() - interval 3 day group by deviceid)sub on d.id = sub.deviceid';
+        $device_ids = [];
+        $out=[];
+        if($request->has('email')){
 
-        // DB::statement("set session sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';");
 
-        // Log::error(DB::connection('mysql2')->select(DB::raw($sql))->toSql());
+            $device_ids = $this->getDeviceIds($request->get('email') === 'admin@revitsone.com' ? 'admin': $request->get('email'));
 
-        $devices = DB::connection('mysql2')->select(DB::raw($sql));
+            $out =implode(',',array_map(function($i){
+                return $i->deviceid;                
+            },$device_ids));
 
-        // return Datatables::of($feedbacks)->toJson();
-        $result = DataTables::of($devices)
-            ->setTransformer(new DeviceTransformer)
-            ->addColumn('details_url', function ($device) {
-                return route('api.device_single_details', $device->id);
-            })
-            ->rawColumns(['speedcount'])
-            ->make(true);
-        return $result;
+        }
+
+        if(count($device_ids) > 0 ){
+
+            $sql = 'select id, name, uniqueid, servertime, d.attributes as device_attributes, sub.attributes as event_attributes, sub.speedcount
+                from tc_devices d left join (select count(*) as speedcount,max(servertime) as servertime, deviceid, attributes from tc_events
+                where type = "deviceOverspeed" and servertime >= now() - interval 3 day group by deviceid)sub on d.id = sub.deviceid where d.id in ('.$out.')';
+
+
+            // Log::error(DB::connection('mysql2')->select(DB::raw($sql))->toSql());
+
+            $devices = DB::connection('mysql2')->select(DB::raw($sql));
+
+            // return Datatables::of($feedbacks)->toJson();
+            $result = DataTables::of($devices)
+                ->setTransformer(new DeviceTransformer)
+                ->addColumn('details_url', function ($device) {
+                    return route('api.device_single_details', $device->id);
+                })
+                ->rawColumns(['speedcount'])
+                ->make(true);
+            return $result;
+        }
+
+    
+        return DataTables::of([])->toJson();
+
 
     }
 
