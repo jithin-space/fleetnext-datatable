@@ -45,16 +45,25 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
-                    <!-- <ul class="nav navbar-nav navbar-right">
-                         <li><a href="{{ route('simple') }}">All Devices</a></li> -->
-                        <!-- <li><a href="{{ route('row_details') }}">Row details</a></li>
-                        <li><a href="{{ route('master_details') }}">Master details</a></li>
+                    <ul class="nav navbar-nav navbar-right">
+                         <li 
+                                class="{{(Route::currentRouteName()=== 'speed_report') ? 'active' : '' }}"
+                            >
+                            <a href="{{ route('speed_report') }}">
+                                Speed Report
+                            </a>
+                        </li> 
+                         <li id="{{Route::currentRouteName()}}"
+                                class="{{(Route::currentRouteName()=== 'power_cut' ) ? 'active' : '' }}"
+                            >
+                            <a href="{{ route('power_cut') }}">
+                                Power Cut
+                            </a>
+                        </li> 
+                        <!-- <li><a href="{{ route('master_details') }}">Master details</a></li>
                         <li><a href="{{ route('column_search') }}">Column search</a></li>
                         <li><a href="{{ route('row_attributes') }}">Row attributes</a></li>
-                        <li><a href="{{ route('carbon') }}">Carbon formatting</a></li> 
-                    </ul> -->
-
-                      <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{{ route('carbon') }}">Carbon formatting</a></li>  -->
                     <!-- Authentication Links -->
                     @if (Auth::guest())
                         <li><a href="{{ url('/login') }}">Login</a></li>

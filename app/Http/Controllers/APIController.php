@@ -25,7 +25,7 @@ class APIController extends Controller
             return [];
         }
     }
-    public function getRowDetailsData(Request $request)
+    public function getSpeedReport(Request $request)
     {
         // $customers = Customer::select(['id', 'first_name', 'last_name', 'email', 'created_at', 'updated_at']);
         // $devices = Device::with('speed_events');
@@ -61,6 +61,49 @@ class APIController extends Controller
                     return route('api.device_single_details', $device->id);
                 })
                 ->rawColumns(['speedcount'])
+                ->make(true);
+            return $result;
+        }
+
+    
+        return DataTables::of([])->toJson();
+
+
+    }
+
+    public function getPowerCut(Request $request)
+    {
+        // $customers = Customer::select(['id', 'first_name', 'last_name', 'email', 'created_at', 'updated_at']);
+        // $devices = Device::with('speed_events');
+
+        $device_ids = [];
+        $out=[];
+        if($request->has('email')){
+
+
+            $device_ids = $this->getDeviceIds($request->get('email') === 'admin@revitsone.com' ? 'admin': $request->get('email'));
+
+            $out =implode(',',array_map(function($i){
+                return $i->deviceid;                
+            },$device_ids));
+
+        }
+
+        if(count($device_ids) > 0 ){
+
+            // $sql = 'select id, name, uniqueid, servertime, d.attributes as device_attributes, sub.attributes as event_attributes, sub.speedcount
+            //     from tc_devices d left join (select count(*) as speedcount,max(servertime) as servertime, deviceid, attributes from tc_events
+            //     where type = "deviceOverspeed" and servertime >= now() - interval 3 day group by deviceid)sub on d.id = sub.deviceid where d.id in ('.$out.')';
+
+            $sql = 'select id, servertime, p.attributes as pos_attributes from tc_positions p left join (select name,uniqueid, d.attributes as dev_attributes) d on d.id = p.deviceid  where p.deviceid in ('.$out.') and p.attributes->"$.alarm" = "powerCut"';
+            
+            // Log::error(DB::connection('mysql2')->select(DB::raw($sql))->toSql());
+
+            $devices = DB::connection('mysql2')->select(DB::raw($sql));
+
+            // return Datatables::of($feedbacks)->toJson();
+            $result = DataTables::of($devices)
+                ->setTransformer(new PositionTransformer)
                 ->make(true);
             return $result;
         }

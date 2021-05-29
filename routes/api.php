@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/row-details', 'APIController@getRowDetailsData')->name('api.row_details');
+Route::get('/speed_report', 'APIController@getSpeedReport')->name('api.speed_report');
+Route::get('/power_cut', 'APIController@getPowerCut')->name('api.power_cut');
 Route::get('/device-details/{id}', 'APIController@getMasterDetailsSingleData')->name('api.device_single_details');
 
 Route::get('/master-details', 'APIController@getMasterDetailsData')->name('api.master_details');
