@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<h3 class="primary">Speed Report(Last 72hrs)</h3>
+<h3 class="primary">PowerCut Events(Last 72hrs)</h3>
 <div class="panel-body">
     <table class="table table-bordered" id="customers-table">
         <thead>
@@ -12,23 +12,20 @@
                 <th>Unique ID</th>
                 <th>Chasis No</th>
                 <th>SIM No</th>
-                <th>Overspeeds</th>
-                <th>Reported AT</th>
-                <th>Speed(kmph)</th>
+                <th>Events In 72hr</th>
+                <th>Last Reported</th>
             </tr>
         </thead>
         <tfoot>
             <tr>
                 <td class="non_searchable"></td>
-                <td class="non_searchable">
-                    </>
+                <td class="non_searchable"></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td class="non_searchable"></td>
                 <td></td>
-                <td class="non_searchable"></td>
             </tr>
         </tfoot>
     </table>
@@ -48,7 +45,7 @@
         <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Device {{ uniqueid }}'s Positions</h4>
+            <h4 class="modal-title">All Reported Powercuts For {{ name }} </h4>
         </div>
         <div class="modal-body">
         <table class="table details-table" id="purchases-{{id}}">
@@ -56,9 +53,6 @@
             <tr>
                 <th>Id</th>
                 <th>Time</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-                <th>Speed(kmph)</th>
             </tr>
             </thead>
         </table>
@@ -83,7 +77,7 @@ var table = $('#customers-table').DataTable({
         'processing': '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'
     },
     serverSide: false,
-    ajax: '{{ route("api.row_details",["email"=>Auth::user()->email]) }}',
+    ajax: '{{ route("api.power_cut",["email"=>Auth::user()->email]) }}',
     columns: [{
             "className": 'details-control',
             "orderable": false,
@@ -117,31 +111,23 @@ var table = $('#customers-table').DataTable({
             orderable: false
         },
         {
-            data: 'speedcount',
-            name: 'speedcount',
-	    orderable: true,
-	    visible: false,
-	    searchable:false
+            data: 'count',
+            name: 'count',
+            orderable: true
         },
         {
             data: 'lastupdate',
             name: 'lastupdate',
-	    orderable: true,
-        },
-        {
-            data: 'recordedspeed',
-            name: 'recordedspeed',
-	    orderable: true,
-	    render: function (data){  return (data >= 140 ? 140: Math.round(data));}
+            orderable: true
         },
     ],
     order: [
-        [6, 'desc']
+        [2, 'asc']
     ],
     "createdRow": function(row, data, dataIndex) {
-        if (data['recordedspeed'] > 80) {
-            $(row).addClass('overspeed');
-        }
+        // if (data['speedcount'] != 0) {
+        //     $(row).addClass('overspeed');
+        // }
     },
     initComplete: function() {
 
@@ -205,15 +191,7 @@ function initTable(tableId, data) {
         ],
         dom: 'lrfBtip',
         buttons: [
-		'copy',
-{ extend: 'excel',
-title: function() {
-			return $('.modal-title')[0].innerHTML;
-		}}, 
-{ extend: 'pdfHtml5',
-title: function() {
-			return $('.modal-title')[0].innerHTML;
-		}}, 
+            'copy', 'csv', 'excel', 'pdf', 'print'
         ],
         processing: true,
         searching: false,
@@ -221,46 +199,11 @@ title: function() {
         ajax: data.details_url,
         columns: [{
                 data: 'id',
-		name: 'id',
-		visible: true
+                name: 'id'
             },
             {
                 data: 'servertime',
                 name: 'servertime'
-            },
-            {
-                data: null,
-                name: 'latitude',
-                render: function(data, type, row, meta) {
-                    if (type === 'display') {
-                        //data = '<a  target="_blank" href="https://maps.google.com/maps?q=' + row.latitude + ',' + row.longitude +  '"> ' + row.latitude + ' </a>';
-                        data =
-                            '<a  target="popup" onclick="window.open(\'https://maps.google.com/maps?q=' +
-                            row.latitude + ',' + row.longitude +
-                            '\',\'popup\',\'width=600,height=600,resizable=no\'); return false;"> ' +
-                            row.latitude + ' </a>';
-                    }
-                    return data;
-                }
-            },
-            {
-                data: null,
-                name: 'longitude',
-                render: function(data, type, row, meta) {
-                    if (type === 'display') {
-                        data =
-                            '<a  target="popup" onclick="window.open(\'https://maps.google.com/maps?q=' +
-                            row.latitude + ',' + row.longitude +
-                            '\',\'popup\',\'width=600,height=600,resizable=no\'); return false;"> ' +
-                            row.longitude + ' </a>';
-                    }
-                    return data;
-                }
-            },
-            {
-                data: 'speed',
-                name: 'speed',
-                render: (data) => (data * 1.852).toFixed(2)
             },
         ]
     })

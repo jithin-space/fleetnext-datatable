@@ -16,11 +16,15 @@ class DeviceController extends Controller
         return view('devices.table', compact('devices'));
     }
 
-    public function getRowDetails()
+    public function getSpeedReport()
     {
-        return view('devices.row_details');
+        return view('devices.speed_report');
     }
 
+    public function getPowerCut()
+    {
+        return view('devices.power_cut');
+    }
     // public function getMasterDetails()
     // {
     //     return view('customers.master_details');
