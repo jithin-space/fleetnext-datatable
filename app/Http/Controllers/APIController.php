@@ -6,6 +6,7 @@ use App\Customer;
 use App\Device;
 use Illuminate\Http\Request;
 use App\Transformers\DeviceTransformer;
+use App\Transformers\PositionTransformer;
 
 // use Yajra\Datatables\Datatables;
 use DB;
