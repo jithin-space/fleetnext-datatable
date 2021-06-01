@@ -58,9 +58,6 @@ class APIController extends Controller
             // return Datatables::of($feedbacks)->toJson();
             $result = DataTables::of($devices)
                 ->setTransformer(new DeviceTransformer)
-                ->addColumn('details_url', function ($device) {
-                    return route('api.speed_single_details', $device->id);
-                })
                 ->rawColumns(['speedcount'])
                 ->make(true);
 
@@ -103,9 +100,6 @@ class APIController extends Controller
             // return Datatables::of($feedbacks)->toJson();
             $result = DataTables::of($devices)
                 ->setTransformer(new PositionTransformer)
-                ->addColumn('details_url', function ($device) {
-                    return route('api.power_single_details', $device->id);
-                })
                 ->make(true);
             return $result;
         }

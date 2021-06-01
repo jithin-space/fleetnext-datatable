@@ -31,6 +31,7 @@ class PositionTransformer extends TransformerAbstract
             strval($dev_attributes['device_sim_no']) : 'N/A',
             'lastupdate' => $device->servertime,
             'count' => $device->count,
+            'details_url' => route('api.power_single_details', $device->id),
         ];
     }
 

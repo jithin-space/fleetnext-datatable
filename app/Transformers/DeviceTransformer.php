@@ -38,7 +38,7 @@ class DeviceTransformer extends TransformerAbstract
             round($knot_speed * 1.852, 4)
             : 0,
             'speedcount' => $device->speedcount,
-            'details_url' => route('api.device_single_details', $device->id),
+            'details_url' => route('api.speed_single_details', $device->id),
         ];
     }
 
