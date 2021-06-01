@@ -12,7 +12,7 @@
                 <th>Unique ID</th>
                 <th>Chasis No</th>
                 <th>SIM No</th>
-                <th>Powercut Events</th>
+                <th>Events In 72hr</th>
                 <th>Last Reported</th>
             </tr>
         </thead>
@@ -45,7 +45,7 @@
         <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">All Reported Powercuts For {{ name }}' </h4>
+            <h4 class="modal-title">All Reported Powercuts For {{ name }} </h4>
         </div>
         <div class="modal-body">
         <table class="table details-table" id="purchases-{{id}}">
