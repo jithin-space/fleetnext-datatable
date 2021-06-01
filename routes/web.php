@@ -11,7 +11,6 @@
 |
  */
 
-// Route::get('/', 'HomeController@index')->name('simple');
 
 Route::get('/', 'DeviceController@getRowDetails')->name('simple')->middleware('auth');
 Route::get('/', function () {
@@ -21,17 +20,8 @@ Route::get('/', function () {
 Route::get('/speed_report', 'DeviceController@getSpeedReport')->name('speed_report')->middleware('auth');
 
 Route::get('/power_cut', 'DeviceController@getPowerCut')->name('power_cut')->middleware('auth');
-Route::get('/master-details', 'HomeController@getMasterDetails')->name('master_details');
-
-Route::get('/column_search', 'HomeController@getColumnSearch')->name('column_search');
-
-Route::get('/row-attributes', 'HomeController@getRowAttributes')->name('row_attributes');
-
-Route::get('/carbon', 'HomeController@getCarbon')->name('carbon');
 
 Auth::routes();
-
-// Route::get('/home', 'DeviceController@getRowDetails')->name('home');
 
 Route::get('/logout', function () {
     Auth::logout();

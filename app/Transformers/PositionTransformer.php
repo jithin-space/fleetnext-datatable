@@ -3,11 +3,9 @@
 namespace App\Transformers;
 
 use App\Device;
-use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 
-// use Illuminate\Support\Facades\Log;
-
+//
 class PositionTransformer extends TransformerAbstract
 {
     /**
@@ -17,7 +15,6 @@ class PositionTransformer extends TransformerAbstract
 
     public function transform($device)
     {
-
 
         $dev_attributes = json_decode($device->attributes, true);
 
