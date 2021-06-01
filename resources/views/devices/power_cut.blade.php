@@ -45,7 +45,7 @@
         <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Device {{ name }}'s Positions</h4>
+            <h4 class="modal-title">All Reported Powercuts For {{ name }}' </h4>
         </div>
         <div class="modal-body">
         <table class="table details-table" id="purchases-{{id}}">
@@ -53,9 +53,6 @@
             <tr>
                 <th>Id</th>
                 <th>Time</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-                <th>Speed(kmph)</th>
             </tr>
             </thead>
         </table>
@@ -207,40 +204,6 @@ function initTable(tableId, data) {
             {
                 data: 'servertime',
                 name: 'servertime'
-            },
-            {
-                data: null,
-                name: 'latitude',
-                render: function(data, type, row, meta) {
-                    if (type === 'display') {
-                        //data = '<a  target="_blank" href="https://maps.google.com/maps?q=' + row.latitude + ',' + row.longitude +  '"> ' + row.latitude + ' </a>';
-                        data =
-                            '<a  target="popup" onclick="window.open(\'https://maps.google.com/maps?q=' +
-                            row.latitude + ',' + row.longitude +
-                            '\',\'popup\',\'width=600,height=600,resizable=no\'); return false;"> ' +
-                            row.latitude + ' </a>';
-                    }
-                    return data;
-                }
-            },
-            {
-                data: null,
-                name: 'longitude',
-                render: function(data, type, row, meta) {
-                    if (type === 'display') {
-                        data =
-                            '<a  target="popup" onclick="window.open(\'https://maps.google.com/maps?q=' +
-                            row.latitude + ',' + row.longitude +
-                            '\',\'popup\',\'width=600,height=600,resizable=no\'); return false;"> ' +
-                            row.longitude + ' </a>';
-                    }
-                    return data;
-                }
-            },
-            {
-                data: 'speed',
-                name: 'speed',
-                render: (data) => (data * 1.852).toFixed(2)
             },
         ]
     })

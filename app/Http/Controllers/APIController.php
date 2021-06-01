@@ -59,7 +59,7 @@ class APIController extends Controller
             $result = DataTables::of($devices)
                 ->setTransformer(new DeviceTransformer)
                 ->addColumn('details_url', function ($device) {
-                    return route('api.device_single_details', $device->id);
+                    return route('api.speed_single_details', $device->id);
                 })
                 ->rawColumns(['speedcount'])
                 ->make(true);
@@ -102,6 +102,9 @@ class APIController extends Controller
             // return Datatables::of($feedbacks)->toJson();
             $result = DataTables::of($devices)
                 ->setTransformer(new PositionTransformer)
+                ->addColumn('details_url', function ($device) {
+                    return route('api.power_single_details', $device->id);
+                })
                 ->make(true);
             return $result;
         }
@@ -128,13 +131,21 @@ class APIController extends Controller
 
     //     return Datatables::of($purchases)->make(true);
     // }
-    public function getMasterDetailsSingleData($id)
+    public function getSpeedReportSingleData($id)
     {
         $positions = Device::findOrFail($id)->positions()
             ->whereRaw('servertime > now() - interval 3 day')->get();
 
         return Datatables::of($positions)->make(true);
     }
+
+    public function getPowerReportSingleData($id)
+    {
+        $sql='select id,servertime from tc_events where type="alarm" and attributes->"$.alarm"="powerCut" and deviceid='.$id;
+        $events = DB::connection('mysql2')->select(DB::raw($sql));
+        return Datatables::of($events)->make(true);
+    }
+
 
     public function getColumnSearchData()
     {
