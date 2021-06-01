@@ -93,7 +93,8 @@ class APIController extends Controller
 
         if(count($device_ids) > 0 ){
 
-            $sql = 'select t1.id,t1.uniqueid,t1.name,t1.attributes,t2.servertime from tc_devices as t1 inner join(select max(servertime)as servertime,deviceid  from tc_events where type = "alarm" and attributes->"$.alarm"="powerCut" and servertime >= now() - interval 3 day group by deviceid) as t2 on t1.id=t2.deviceid where t1.id in ('.$out.')';
+            $sql = 'select t1.id,t1.uniqueid,t1.name,t1.attributes,t2.servertime,t2.count from tc_devices as t1 inner join(select max(servertime)as servertime,count(servertime) as count,deviceid  from tc_events where type = "alarm" and attributes->"$.alarm"="powerCut" and servertime >= now() - interval 3 day group by deviceid) as t2 on t1.id=t2.deviceid';
+            // where t1.id in ('.$out.')';
             
             // Log::error(DB::connection('mysql2')->select(DB::raw($sql))->toSql());
 
