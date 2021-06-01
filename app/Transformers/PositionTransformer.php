@@ -15,23 +15,22 @@ class PositionTransformer extends TransformerAbstract
      * @return array
      */
 
-    public function transform($position)
+    public function transform($device)
     {
 
 
-        $event_attributes = json_decode($postion->pos_attributes, true);
-        $dev_attributes = json_decode($postion->dev_attributes, true);
+        $dev_attributes = json_decode($device->attributes, true);
 
         return [
-            'id' => $position->id,
-            'name' => $position->name,
-            'uniqueid' => $position->uniqueid,
+            'id' => $device->id,
+            'name' => $device->name,
+            'uniqueid' => $device->uniqueid,
             'chasisnum' => array_key_exists('chasis_number', $dev_attributes) ?
             $dev_attributes['chasis_number'] : 'N/A',
             'simnum' => array_key_exists('device_sim_no', $dev_attributes) ?
             strval($dev_attributes['device_sim_no']) : 'N/A',
-            'event_attributes' => $event_attributes,
-            'lastupdate' => $position->servertime,
+            'lastupdate' => $device->servertime,
+            'count' => $device->count,
         ];
     }
 

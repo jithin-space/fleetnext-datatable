@@ -17,7 +17,7 @@ class APIController extends Controller
 
         if($email) {
             $ids = DB::connection('mysql2')->select(DB::raw('select id from tc_users where email="'.$email.'"'));
-            if($ids[0]->id){
+            if($ids&& count($ids)>0 && $ids[0]->id){
                 $d_ids = DB::connection('mysql2')->select(DB::raw('select deviceid from tc_user_device where userid='.$ids[0]->id));
                 return $d_ids;
             }
@@ -62,6 +62,7 @@ class APIController extends Controller
                 })
                 ->rawColumns(['speedcount'])
                 ->make(true);
+
             return $result;
         }
 
@@ -91,11 +92,7 @@ class APIController extends Controller
 
         if(count($device_ids) > 0 ){
 
-            // $sql = 'select id, name, uniqueid, servertime, d.attributes as device_attributes, sub.attributes as event_attributes, sub.speedcount
-            //     from tc_devices d left join (select count(*) as speedcount,max(servertime) as servertime, deviceid, attributes from tc_events
-            //     where type = "deviceOverspeed" and servertime >= now() - interval 3 day group by deviceid)sub on d.id = sub.deviceid where d.id in ('.$out.')';
-
-            $sql = 'select id, servertime, p.attributes as pos_attributes from tc_positions p left join (select name,uniqueid, d.attributes as dev_attributes) d on d.id = p.deviceid  where p.deviceid in ('.$out.') and p.attributes->"$.alarm" = "powerCut"';
+            $sql = 'select t1.id,t1.uniqueid,t1.name,t1.attributes,t2.servertime from tc_devices as t1 inner join(select max(servertime)as servertime,deviceid  from tc_events where type = "alarm" and attributes->"$.alarm"="powerCut" and servertime >= now() - interval 3 day group by deviceid) as t2 on t1.id=t2.deviceid where t1.id in ('.$out.')';
             
             // Log::error(DB::connection('mysql2')->select(DB::raw($sql))->toSql());
 

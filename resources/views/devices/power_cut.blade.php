@@ -12,23 +12,20 @@
                 <th>Unique ID</th>
                 <th>Chasis No</th>
                 <th>SIM No</th>
-                <th>Overspeeds</th>
-                <th>Reported AT</th>
-                <th>Speed(kmph)</th>
+                <th>Powercut Events</th>
+                <th>Last Reported</th>
             </tr>
         </thead>
         <tfoot>
             <tr>
                 <td class="non_searchable"></td>
-                <td class="non_searchable">
-                    </>
+                <td class="non_searchable"></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td class="non_searchable"></td>
                 <td></td>
-                <td class="non_searchable"></td>
             </tr>
         </tfoot>
     </table>
@@ -117,8 +114,8 @@ var table = $('#customers-table').DataTable({
             orderable: false
         },
         {
-            data: 'speedcount',
-            name: 'speedcount',
+            data: 'count',
+            name: 'count',
             orderable: true
         },
         {
@@ -126,19 +123,14 @@ var table = $('#customers-table').DataTable({
             name: 'lastupdate',
             orderable: true
         },
-        {
-            data: 'recordedspeed',
-            name: 'recordedspeed',
-            orderable: true
-        },
     ],
     order: [
         [2, 'asc']
     ],
     "createdRow": function(row, data, dataIndex) {
-        if (data['speedcount'] != 0) {
-            $(row).addClass('overspeed');
-        }
+        // if (data['speedcount'] != 0) {
+        //     $(row).addClass('overspeed');
+        // }
     },
     initComplete: function() {
 
